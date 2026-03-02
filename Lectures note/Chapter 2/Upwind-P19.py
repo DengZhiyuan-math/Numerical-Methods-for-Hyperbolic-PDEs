@@ -49,9 +49,6 @@ for k, (dt_req, u_num, lam, dt_adj, nsteps) in enumerate(solutions, start=1):
     plt.title(f'Upwind, N={N}, a={a}, T={T}\nrequested dt={dt_req/dx:.1f} dx | used dt={dt_adj/dx:.6f} dx | CFL λ={lam:.6f}')
     plt.legend()
     plt.tight_layout()
-    out = f"upwind_dt_{dt_req / dx:.1f}dx.png"
-    plt.savefig(out, dpi=200)
-    paths.append(out)
     plt.show()
 
 paths
