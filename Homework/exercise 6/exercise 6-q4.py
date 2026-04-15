@@ -53,7 +53,7 @@ def run_scheme(
     """
     a, b = domain
     dx = (b - a) / N
-    x = a + (np.arange(N) + 0.5) * dx   # cell centers
+    x = a + (np.arange(N) + 0.5) * dx
 
     u = initial_condition(x)
     t = 0.0
@@ -76,10 +76,15 @@ def run_scheme(
 
 
 def main():
-    # You can change these parameters
     N = 1600
     T = 0.3
     cfl = 0.4
+
+    # Consistent colors across all panels
+    color_init = "tab:blue"
+    color_cons = "tab:orange"
+    color_nonc = "tab:green"
+    color_ref = "black"
 
     x0 = (np.arange(N) + 0.5) / N
     u_init = initial_condition(x0)
@@ -91,7 +96,7 @@ def main():
         nonconservative_step, N=N, T=T, cfl=cfl
     )
 
-    mass0 = np.mean([m_cons[0], m_nonc[0]])
+    mass0 = m_cons[0]
 
     print(f"Initial mass                 = {mass0:.12f}")
     print(f"Final mass (conservative)    = {m_cons[-1]:.12f}")
@@ -103,9 +108,21 @@ def main():
     fig, axes = plt.subplots(2, 1, figsize=(9, 8), constrained_layout=True)
 
     # Top plot: solution profiles
-    axes[0].plot(x0, u_init, label="Initial condition", linewidth=2)
-    axes[0].plot(x_cons, u_cons, label="Conservative scheme", linewidth=2)
-    axes[0].plot(x_nonc, u_nonc, "--", label="Non-conservative scheme", linewidth=2)
+    axes[0].plot(
+        x0, u_init,
+        color=color_init, linewidth=2,
+        label="Initial condition"
+    )
+    axes[0].plot(
+        x_cons, u_cons,
+        color=color_cons, linewidth=2,
+        label="Conservative scheme"
+    )
+    axes[0].plot(
+        x_nonc, u_nonc,
+        color=color_nonc, linestyle="--", linewidth=2,
+        label="Non-conservative scheme"
+    )
     axes[0].set_title(f"Burgers equation at T = {T}, N = {N}")
     axes[0].set_xlabel("x")
     axes[0].set_ylabel("u")
@@ -113,9 +130,20 @@ def main():
     axes[0].legend()
 
     # Bottom plot: mass history
-    axes[1].plot(t_cons, m_cons, label="Conservative mass", linewidth=2)
-    axes[1].plot(t_nonc, m_nonc, "--", label="Non-conservative mass", linewidth=2)
-    axes[1].axhline(mass0, color="k", linestyle=":", linewidth=1.5, label="Initial mass")
+    axes[1].plot(
+        t_cons, m_cons,
+        color=color_cons, linewidth=2,
+        label="Conservative mass"
+    )
+    axes[1].plot(
+        t_nonc, m_nonc,
+        color=color_nonc, linestyle="--", linewidth=2,
+        label="Non-conservative mass"
+    )
+    axes[1].axhline(
+        mass0, color=color_ref, linestyle=":", linewidth=1.5,
+        label="Initial mass"
+    )
     axes[1].set_title("Discrete mass over time")
     axes[1].set_xlabel("t")
     axes[1].set_ylabel("Δx Σ_j U_j")
